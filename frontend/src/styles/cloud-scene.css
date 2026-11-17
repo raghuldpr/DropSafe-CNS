@@ -1,0 +1,118 @@
+/* DropSafe Cinematic Cloud Background Scene */
+.dropsafe-cloud-scene {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: var(--color-canvas);
+  min-height: 100vh;
+}
+
+.dropsafe-cloud-scene__image,
+.dropsafe-cloud-scene__shade,
+.dropsafe-cloud-scene__glow,
+.dropsafe-cloud-scene__stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.dropsafe-cloud-scene__image {
+  z-index: -4;
+  background-image: url("/assets/cloud-background.png");
+  background-position: center 20%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transform: scale(1.05);
+  animation: dropsafe-cloud-drift 48s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* Carefully controlled overlay: ensures crisp text readability while showcasing the cloud artwork */
+.dropsafe-cloud-scene__shade {
+  z-index: -3;
+  background:
+    radial-gradient(circle at 50% 30%, transparent 20%, rgba(8, 9, 11, 0.4) 65%, rgba(8, 9, 11, 0.85) 100%),
+    linear-gradient(180deg, 
+      rgba(8, 9, 11, 0.75) 0%, 
+      rgba(8, 9, 11, 0.25) 25%, 
+      rgba(8, 9, 11, 0.45) 55%, 
+      rgba(8, 9, 11, 0.90) 80%, 
+      #08090B 92%,
+      #08090B 100%
+    );
+}
+
+.dropsafe-cloud-scene__glow {
+  z-index: -2;
+  background:
+    radial-gradient(ellipse at 50% 38%, rgba(140, 184, 255, 0.08) 0%, transparent 45%),
+    radial-gradient(ellipse at 20% 45%, rgba(93, 151, 246, 0.05) 0%, transparent 35%),
+    radial-gradient(ellipse at 80% 48%, rgba(93, 151, 246, 0.05) 0%, transparent 35%);
+  opacity: 0.75;
+  animation: dropsafe-atmosphere 20s ease-in-out infinite alternate;
+}
+
+.dropsafe-cloud-scene__stars {
+  z-index: -1;
+  opacity: 0.45;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, #ffffff 80%, transparent),
+    radial-gradient(1px 1px at 25% 45%, #ffffff 70%, transparent),
+    radial-gradient(1.5px 1.5px at 38% 22%, #ffffff 75%, transparent),
+    radial-gradient(1px 1px at 62% 16%, #ffffff 75%, transparent),
+    radial-gradient(1px 1px at 75% 38%, #ffffff 70%, transparent),
+    radial-gradient(1.5px 1.5px at 85% 20%, #ffffff 80%, transparent),
+    radial-gradient(1px 1px at 90% 55%, #ffffff 70%, transparent),
+    radial-gradient(1px 1px at 48% 60%, #ffffff 70%, transparent);
+  background-size: 100% 100%;
+  animation: dropsafe-stars 8s ease-in-out infinite alternate;
+}
+
+.dropsafe-cloud-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+@keyframes dropsafe-cloud-drift {
+  0% {
+    transform: scale(1.05) translate3d(-0.4%, 0.2%, 0);
+  }
+  100% {
+    transform: scale(1.10) translate3d(0.4%, -0.2%, 0);
+  }
+}
+
+@keyframes dropsafe-atmosphere {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.85;
+    transform: scale(1.03);
+  }
+}
+
+@keyframes dropsafe-stars {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dropsafe-cloud-scene__image,
+  .dropsafe-cloud-scene__glow,
+  .dropsafe-cloud-scene__stars {
+    animation: none !important;
+    transform: scale(1.05) !important;
+  }
+}

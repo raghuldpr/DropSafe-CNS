@@ -1,0 +1,75 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: dropsafe-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-dropsafe}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dropsafe_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-dropsafe_db}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dropsafe} -d ${POSTGRES_DB:-dropsafe_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dropsafe-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: dropsafe-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dropsafe-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dropsafe-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=true
+      - DATABASE_URL=postgresql+psycopg://${POSTGRES_USER:-dropsafe}:${POSTGRES_PASSWORD:-dropsafe_secret}@postgres:5432/${POSTGRES_DB:-dropsafe_db}
+      - REDIS_URL=redis://redis:6379/0
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000,http://127.0.0.1:5173
+      - SECRET_KEY=${SECRET_KEY:-insecure-change-this-in-production-super-secret-key-min-32-chars}
+    volumes:
+      - ./backend:/app
+      - storage_data:/app/data/storage
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - dropsafe-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  storage_data:
+    driver: local
+
+networks:
+  dropsafe-network:
+    driver: bridge

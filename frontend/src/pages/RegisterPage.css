@@ -1,0 +1,330 @@
+/* DropSafe Create Account / Register Page Styles */
+
+.ds-register-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Auth Top Navigation */
+.ds-register-nav {
+  position: relative;
+  z-index: 10;
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-8);
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: rgba(8, 9, 11, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.ds-register-nav__brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.ds-register-nav__logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  transition: opacity var(--transition-fast);
+}
+
+.ds-register-nav__logo:hover {
+  opacity: 0.9;
+}
+
+.ds-register-nav__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.ds-register-nav__text {
+  color: var(--color-text-secondary);
+}
+
+.ds-register-nav__signin-btn {
+  color: var(--color-accent);
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.ds-register-nav__signin-btn:hover {
+  color: #ffffff;
+  background-color: var(--color-surface-hover);
+  border-color: var(--color-border-hover);
+}
+
+/* Centered Main Area & Card */
+.ds-register-main {
+  position: relative;
+  z-index: 5;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+}
+
+.ds-register-card {
+  width: 100%;
+  max-width: 460px;
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-raised);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: ds-card-appear 250ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ds-register-card__header {
+  margin-bottom: var(--space-6);
+  text-align: left;
+}
+
+.ds-register-card__title {
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-2);
+}
+
+.ds-register-card__subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+/* Form Layout */
+.ds-register-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.ds-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.ds-form-label {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.ds-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ds-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--space-4);
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  font-family: inherit;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.ds-input:hover {
+  border-color: var(--color-border-hover);
+}
+
+.ds-input:focus {
+  border-color: var(--color-accent);
+  outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
+}
+
+.ds-input--error {
+  border-color: var(--color-danger) !important;
+}
+
+.ds-input--with-toggle {
+  padding-right: 44px;
+}
+
+.ds-input-toggle {
+  position: absolute;
+  right: var(--space-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  background: transparent;
+  cursor: pointer;
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.ds-input-toggle:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-hover);
+}
+
+.ds-form-error {
+  font-size: var(--text-xs);
+  color: var(--color-danger);
+  margin-top: var(--space-1);
+}
+
+/* Submit Button & Spinner */
+.ds-btn--submit {
+  width: 100%;
+  height: 44px;
+  margin-top: var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  background-color: var(--color-accent-strong);
+  color: #ffffff;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 8px rgba(93, 151, 246, 0.25);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.ds-btn--submit:hover:not(:disabled) {
+  background-color: var(--color-accent-hover);
+  transform: translateY(-1px);
+}
+
+.ds-btn--submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.ds-btn--submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.ds-btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: ds-spin 700ms linear infinite;
+}
+
+/* Consent Note */
+.ds-register-consent {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+  line-height: 1.5;
+  margin-top: var(--space-1);
+}
+
+/* Development Status Notice */
+.ds-register-notice {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background-color: rgba(231, 183, 106, 0.1);
+  border: 1px solid rgba(231, 183, 106, 0.25);
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  margin-top: var(--space-4);
+}
+
+.ds-register-notice__title {
+  color: var(--color-warning);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Card Footer with Back to Home */
+.ds-register-card__footer {
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border-subtle);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.ds-register-home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  cursor: pointer;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.ds-register-home-link:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-hover);
+}
+
+@keyframes ds-card-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ds-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .ds-register-nav {
+    padding: 0 var(--space-4);
+  }
+
+  .ds-register-nav__text {
+    display: none;
+  }
+
+  .ds-register-card {
+    padding: var(--space-6);
+  }
+}

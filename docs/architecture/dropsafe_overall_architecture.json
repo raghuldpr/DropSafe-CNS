@@ -1,0 +1,352 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "DROPSAFE — OVERALL SYSTEM ARCHITECTURE",
+    "output": "dropsafe_overall_architecture.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "users",
+      "type": "external",
+      "label": "Clients & Data Owners",
+      "sublabel": "File Owner & Designated Recipient",
+      "tag": "Client Keys: RSA-3072 + ECDSA-P256",
+      "pos": [
+        40,
+        200
+      ],
+      "size": [
+        150,
+        76
+      ]
+    },
+    {
+      "id": "frontend",
+      "type": "frontend",
+      "label": "Web Frontend",
+      "sublabel": "React 19 + TypeScript + Vite",
+      "tag": "Client WebCrypto (AES-GCM/RSA-OAEP)",
+      "pos": [
+        230,
+        200
+      ],
+      "size": [
+        160,
+        76
+      ]
+    },
+    {
+      "id": "storage",
+      "type": "cloud",
+      "label": "Cloud Object Storage",
+      "sublabel": "Cloudflare R2 / AWS S3 / MinIO",
+      "tag": "Ciphertext Blobs: AES-256-GCM (.enc)",
+      "pos": [
+        140,
+        460
+      ],
+      "size": [
+        180,
+        80
+      ]
+    },
+    {
+      "id": "api_gw",
+      "type": "backend",
+      "label": "API Router & Session Gateway",
+      "sublabel": "/api/v1 (FastAPI Modular Monolith)",
+      "tag": "Argon2id (PW) + JWT HS256 (Sessions)",
+      "pos": [
+        450,
+        110
+      ],
+      "size": [
+        180,
+        74
+      ]
+    },
+    {
+      "id": "crypto_engine",
+      "type": "security",
+      "label": "Core Cryptographic Engine",
+      "sublabel": "Key Validation & Envelopes (security.py)",
+      "tag": "RSA-OAEP-3072 + ECDSA-P256 Verify",
+      "pos": [
+        450,
+        230
+      ],
+      "size": [
+        180,
+        74
+      ]
+    },
+    {
+      "id": "abac_engine",
+      "type": "security",
+      "label": "ABAC Authorization Engine",
+      "sublabel": "AST Policy Evaluator (evaluator.py)",
+      "tag": "Logical/Relational (Default-Deny)",
+      "pos": [
+        450,
+        350
+      ],
+      "size": [
+        180,
+        74
+      ]
+    },
+    {
+      "id": "attr_authority",
+      "type": "security",
+      "label": "Attribute Authority Service",
+      "sublabel": "Credential Issuer (attribute_service.py)",
+      "tag": "ECDSA-P256 (ES256) Signatures",
+      "pos": [
+        450,
+        470
+      ],
+      "size": [
+        180,
+        74
+      ]
+    },
+    {
+      "id": "storage_coord",
+      "type": "cloud",
+      "label": "Storage Coordinator",
+      "sublabel": "Presigned URL Service (adapter.py)",
+      "tag": "Zero-Knowledge Payload Relay",
+      "pos": [
+        450,
+        590
+      ],
+      "size": [
+        180,
+        74
+      ]
+    },
+    {
+      "id": "doc_service",
+      "type": "backend",
+      "label": "Document & Sharing Service",
+      "sublabel": "Envelopes & Grants (sharing_service.py)",
+      "tag": "Wrapped DEKs (RSA-OAEP-3072)",
+      "pos": [
+        690,
+        160
+      ],
+      "size": [
+        180,
+        74
+      ]
+    },
+    {
+      "id": "audit_service",
+      "type": "backend",
+      "label": "Audit Ledger & Merkle Engine",
+      "sublabel": "Sequential Log & Batcher (service.py)",
+      "tag": "SHA-256 Merkle Tree (0x00 / 0x01)",
+      "pos": [
+        690,
+        350
+      ],
+      "size": [
+        180,
+        74
+      ]
+    },
+    {
+      "id": "outbox_worker",
+      "type": "messagebus",
+      "label": "Outbox Job Worker",
+      "sublabel": "Lease Queue Runner (worker.py)",
+      "tag": "Async Batch & Web3 Anchor Scheduler",
+      "pos": [
+        690,
+        520
+      ],
+      "size": [
+        180,
+        74
+      ]
+    },
+    {
+      "id": "database",
+      "type": "database",
+      "label": "Relational Database",
+      "sublabel": "PostgreSQL 16 (Async) / SQLite",
+      "tag": "Metadata, Policies, Grants & Logs",
+      "pos": [
+        980,
+        180
+      ],
+      "size": [
+        180,
+        80
+      ]
+    },
+    {
+      "id": "blockchain",
+      "type": "security",
+      "label": "Blockchain Audit Anchor",
+      "sublabel": "AuditAnchor.sol (Sepolia / Local)",
+      "tag": "anchorBatch() | Default: Mock Mode",
+      "pos": [
+        980,
+        520
+      ],
+      "size": [
+        180,
+        80
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Backend Application Core (Python 3.13 + FastAPI Modular Monolith)",
+      "wraps": [
+        "api_gw",
+        "crypto_engine",
+        "abac_engine",
+        "attr_authority",
+        "storage_coord",
+        "doc_service",
+        "audit_service",
+        "outbox_worker"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "user-to-frontend",
+      "from": "users",
+      "to": "frontend",
+      "label": "User Interaction (Mock UI)",
+      "variant": "dashed"
+    },
+    {
+      "id": "frontend-to-api",
+      "from": "frontend",
+      "to": "api_gw",
+      "label": "REST API (Pending Wiring)",
+      "variant": "dashed"
+    },
+    {
+      "id": "api-to-crypto",
+      "from": "api_gw",
+      "to": "crypto_engine",
+      "label": "JWK Key Thumbprinting"
+    },
+    {
+      "id": "crypto-to-abac",
+      "from": "crypto_engine",
+      "to": "abac_engine",
+      "label": "Signature Verification",
+      "variant": "security"
+    },
+    {
+      "id": "authority-to-abac",
+      "from": "attr_authority",
+      "to": "abac_engine",
+      "label": "Signed Credentials (ES256)",
+      "variant": "security"
+    },
+    {
+      "id": "abac-to-doc",
+      "from": "abac_engine",
+      "to": "doc_service",
+      "label": "Authorization Decision",
+      "variant": "emphasis"
+    },
+    {
+      "id": "doc-to-db",
+      "from": "doc_service",
+      "to": "database",
+      "label": "Metadata & Envelopes"
+    },
+    {
+      "id": "doc-to-coord",
+      "from": "doc_service",
+      "to": "storage_coord",
+      "label": "Presigned URL",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "coord-to-storage",
+      "from": "storage_coord",
+      "to": "storage",
+      "label": "Signed S3 URL"
+    },
+    {
+      "id": "client-direct-storage",
+      "from": "users",
+      "to": "storage",
+      "label": "Direct Encrypted I/O (AES-GCM)",
+      "variant": "dashed"
+    },
+    {
+      "id": "doc-to-audit",
+      "from": "doc_service",
+      "to": "audit_service",
+      "label": "Emit Audit Event"
+    },
+    {
+      "id": "audit-to-db",
+      "from": "audit_service",
+      "to": "database",
+      "label": "Hash-Chained Log"
+    },
+    {
+      "id": "audit-to-worker",
+      "from": "audit_service",
+      "to": "outbox_worker",
+      "label": "Batch Job"
+    },
+    {
+      "id": "worker-to-db",
+      "from": "outbox_worker",
+      "to": "database",
+      "label": "Lease & Receipt"
+    },
+    {
+      "id": "worker-to-chain",
+      "from": "outbox_worker",
+      "to": "blockchain",
+      "label": "anchorBatch() (Mock)",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Core Cryptographic Algorithms",
+      "items": [
+        "File Payload Cipher: AES-256-GCM authenticated symmetric encryption with 96-bit nonce and 128-bit authentication tag",
+        "Key Encapsulation: RSA-OAEP-3072 (SHA-256 MGF1) wraps per-document Data Encryption Keys (DEKs) for each recipient",
+        "Signatures & Authentication: ECDSA P-256 (secp256r1) with SHA-256 for file digests and attribute credentials; Argon2id for passwords"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Attribute-Based Access Control (ABAC)",
+      "items": [
+        "Recursive AST policy engine enforcing fine-grained default-deny rules (all, any, not, eq, in, contains, gte, lte)",
+        "Attribute Authority issues ECDSA-P256 (ES256) cryptographically signed user credentials with canonical JSON",
+        "Dynamic attribute revocation: Immediate revocation takes effect dynamically at file download evaluation time"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Blockchain Audit Anchor & Merkle Proofs",
+      "items": [
+        "Domain-Separated Merkle Trees: Leaf hashes use SHA-256(0x00 || event_hash); internal nodes use SHA-256(0x01 || left || right)",
+        "AuditAnchor.sol: Smart contract exposes anchorBatch(batchNumber, merkleRoot, firstSeq, lastSeq, count) and verifyBatchRoot()",
+        "Dual-Mode Execution: OutboxWorker defaults to deterministic Mock Mode (simulated block 5000000+), ready for Web3 live Sepolia RPC"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,466 @@
+/* DropSafe Upload Progress & Completion UI Styles */
+
+.ds-progress-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navigation */
+.ds-progress-nav {
+  position: relative;
+  z-index: 10;
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-8);
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: rgba(8, 9, 11, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.ds-progress-nav__brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.ds-progress-nav__logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  transition: opacity var(--transition-fast);
+}
+
+.ds-progress-nav__logo:hover {
+  opacity: 0.9;
+}
+
+.ds-progress-nav__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ds-progress-nav__btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.ds-progress-nav__btn-back:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-hover);
+  border-color: var(--color-border-hover);
+}
+
+/* Main Layout */
+.ds-progress-main {
+  position: relative;
+  z-index: 5;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-10) var(--space-6) var(--space-16);
+  width: 100%;
+}
+
+.ds-progress-container {
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* Header */
+.ds-progress-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ds-progress-title {
+  font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+}
+
+.ds-progress-subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  max-width: 540px;
+  line-height: 1.6;
+}
+
+/* Card Container */
+.ds-progress-card {
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-raised);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  animation: ds-card-appear 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Selected Summary Row */
+.ds-progress-summary-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.ds-progress-badge-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.ds-progress-badge {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+.ds-progress-badge--primary {
+  background-color: rgba(93, 151, 246, 0.15);
+  color: var(--color-accent);
+  border: 1px solid rgba(93, 151, 246, 0.3);
+}
+
+.ds-progress-badge--neutral {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-subtle);
+}
+
+/* File List Accordion / Summary Box */
+.ds-progress-files-box {
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  max-height: 180px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.ds-progress-file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  padding: var(--space-1) 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.ds-progress-file-item:last-child {
+  border-bottom: none;
+}
+
+.ds-progress-file-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  max-width: 75%;
+}
+
+.ds-progress-file-name {
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Pipeline / Stages Section */
+.ds-workflow-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.ds-workflow-title {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+.ds-workflow-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  list-style: none;
+}
+
+.ds-workflow-step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast);
+}
+
+.ds-workflow-step--done {
+  border-color: rgba(101, 201, 149, 0.4);
+  background-color: rgba(16, 18, 22, 0.85);
+}
+
+.ds-workflow-step--pending {
+  border-color: var(--color-border);
+  opacity: 0.85;
+}
+
+.ds-workflow-step__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.ds-workflow-step--done .ds-workflow-step__icon {
+  background-color: rgba(101, 201, 149, 0.15);
+  color: var(--color-success);
+  border: 1px solid rgba(101, 201, 149, 0.3);
+}
+
+.ds-workflow-step--pending .ds-workflow-step__icon {
+  background-color: var(--color-surface-raised);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+.ds-workflow-step__body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 2px;
+}
+
+.ds-workflow-step__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.ds-workflow-step__name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.ds-workflow-step__status {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.ds-workflow-step__status--done {
+  background-color: rgba(101, 201, 149, 0.12);
+  color: var(--color-success);
+  border: 1px solid rgba(101, 201, 149, 0.25);
+}
+
+.ds-workflow-step__status--waiting {
+  background-color: rgba(231, 183, 106, 0.12);
+  color: var(--color-warning);
+  border: 1px solid rgba(231, 183, 106, 0.25);
+}
+
+.ds-workflow-step__desc {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+/* Neutral Progress Status Banner */
+.ds-progress-status-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  background-color: rgba(231, 183, 106, 0.08);
+  border: 1px solid rgba(231, 183, 106, 0.25);
+}
+
+.ds-progress-status-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-warning);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.ds-progress-status-text {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+/* Actions Row */
+.ds-progress-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.ds-progress-preview-toggle {
+  font-size: var(--text-xs);
+  color: var(--color-accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  transition: color var(--transition-fast);
+}
+
+.ds-progress-preview-toggle:hover {
+  color: var(--color-accent-hover);
+}
+
+/* Completion Preview Card */
+.ds-completion-preview-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  border-radius: var(--radius-md);
+  background-color: rgba(16, 18, 22, 0.95);
+  border: 1px dashed var(--color-border);
+  position: relative;
+  margin-top: var(--space-2);
+}
+
+.ds-completion-preview-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-warning);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background-color: rgba(231, 183, 106, 0.12);
+  border: 1px solid rgba(231, 183, 106, 0.3);
+  width: fit-content;
+}
+
+.ds-completion-preview-title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.ds-completion-preview-desc {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* Empty State Card */
+.ds-progress-empty-card {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-12) var(--space-8);
+  gap: var(--space-4);
+}
+
+.ds-progress-empty-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-2);
+}
+
+@keyframes ds-card-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 640px) {
+  .ds-progress-nav {
+    padding: 0 var(--space-4);
+  }
+
+  .ds-progress-main {
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .ds-progress-card {
+    padding: var(--space-6);
+  }
+
+  .ds-progress-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ds-progress-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+}

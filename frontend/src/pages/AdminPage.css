@@ -1,0 +1,30 @@
+.ds-admin { padding: var(--space-4, 24px); display: flex; flex-direction: column; gap: var(--space-4, 24px); max-width: 1200px; width: 100%; }
+.ds-admin__head h1 { font-size: 24px; margin: 0 0 6px; }
+.ds-admin__head p { margin: 0; color: var(--color-text-secondary, #94a3b8); font-size: 14px; max-width: 70ch; }
+.ds-admin__grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: var(--space-4, 24px); }
+@media (max-width: 960px) { .ds-admin__grid { grid-template-columns: 1fr; } }
+.ds-admin__card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; }
+.ds-admin__card h2 { font-size: 16px; margin: 0 0 12px; }
+.ds-admin__card h3 { font-size: 13px; margin: 18px 0 8px; text-transform: uppercase; letter-spacing: .05em; color: var(--color-text-secondary, #94a3b8); }
+.ds-admin__card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.ds-admin__card-head .ds-admin__input { max-width: 240px; }
+.ds-admin__table-wrap { overflow-x: auto; }
+.ds-admin__table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ds-admin__table th { text-align: left; font-weight: 500; color: var(--color-text-secondary, #94a3b8); padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.ds-admin__table td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+.ds-admin__table tbody tr { cursor: pointer; }
+.ds-admin__table tbody tr:hover, .ds-admin__table tbody tr.is-selected { background: rgba(255,255,255,0.06); }
+.ds-admin__table tbody tr:focus-visible { outline: 2px solid #fff; outline-offset: -2px; }
+.ds-admin__badge, .ds-admin__chip { display: inline-block; font-size: 11px; padding: 2px 8px; margin: 0 4px 4px 0; border-radius: 999px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); }
+.ds-admin__muted { color: var(--color-text-muted, #94a3b8); font-size: 12px; }
+.ds-admin__label { display: block; font-size: 12px; margin: 10px 0 4px; color: var(--color-text-secondary, #94a3b8); }
+.ds-admin__input { width: 100%; box-sizing: border-box; padding: 8px 10px; border-radius: 8px; background: rgba(0,0,0,0.3); color: inherit; border: 1px solid rgba(255,255,255,0.15); font: inherit; font-size: 13px; margin-bottom: 8px; }
+.ds-admin__row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.ds-admin__form { margin-top: 14px; }
+.ds-admin__form .ds-admin__input { flex: 1 1 160px; width: auto; margin: 0; }
+.ds-admin__list { list-style: none; margin: 0; padding: 0; font-size: 13px; }
+.ds-admin__list li { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.ds-admin__link { background: none; border: none; color: #f87171; cursor: pointer; font-size: 12px; }
+.ds-admin__msg { padding: 10px 14px; border-radius: 8px; font-size: 13px; }
+.ds-admin__msg--ok { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.35); }
+.ds-admin__msg--err { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.35); }
