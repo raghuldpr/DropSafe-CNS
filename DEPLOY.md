@@ -123,6 +123,23 @@ The folder `frontend/functions/api/` is picked up automatically and forwards `/a
 3. Audit Log > **Verify Hash Chain** > **Seal & Anchor Batch**. After about 30 seconds (Sepolia block time) the batch shows `anchored`. Open an event proof and check on-chain verification.
 4. As Admin, open the Admin Console.
 
+## Deploying the frontend with Wrangler (what was used)
+
+Run these in **PowerShell**, not Git Bash. Git Bash silently rewrites values like `/api/v1` into `C:/Program Files/Git/api/v1`, which breaks the built site.
+
+```powershell
+cd frontend
+$env:VITE_API_BASE_URL="/api/v1"
+$env:VITE_BLOCKCHAIN_RPC_URL="https://ethereum-sepolia-rpc.publicnode.com"
+$env:VITE_CHAIN_ID="11155111"
+$env:VITE_AUDIT_ANCHOR_CONTRACT_ADDRESS="<your Sepolia contract address>"
+npm run build
+npx wrangler login
+npx wrangler pages project create dropsafe-cns --production-branch main
+"<catalyst service url>" | npx wrangler pages secret put BACKEND_URL --project-name dropsafe-cns
+npx wrangler pages deploy dist --project-name dropsafe-cns --branch main
+```
+
 ## Security notes for a public deployment
 
 - The seeded demo accounts have publicly documented passwords. That is fine for a demo, but set `SEED_DEMO_DATA=false` (and delete those users) before storing anything you care about.

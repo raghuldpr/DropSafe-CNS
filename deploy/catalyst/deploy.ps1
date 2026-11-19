@@ -45,7 +45,7 @@ $appConfig = [ordered]@{
 $appConfig | ConvertTo-Json -Depth 5 | Set-Content "$here\build\app-config.json" -Encoding ascii
 
 Push-Location "$here\project"
-npx zcatalyst-cli deploy appsail --name dropsafe-api --build-path (Join-Path $here "build") --stack python_3_12 --command "sh start-catalyst.sh"
+npx zcatalyst-cli deploy -ni
 $code = $LASTEXITCODE
 Pop-Location
 if ($code -ne 0) { throw "Catalyst deploy failed (exit $code). See the output above." }
