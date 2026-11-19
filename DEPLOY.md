@@ -65,6 +65,40 @@ Notes:
 - A free Space pauses after roughly two days without visitors and wakes on the next request (takes a minute or two). Open it the day before your exam, or add a free uptime pinger (for example UptimeRobot) hitting the health URL every 5 minutes.
 - The Space runs the API and the anchoring worker in one container (`backend/start-hosted.sh`).
 
+## 3b. Backend alternative: Zoho Catalyst AppSail (no Docker needed)
+
+This is the route actually used for the capstone deployment. It uses Catalyst's managed Python 3.12 runtime, so no local Docker build is required.
+
+One-time setup:
+1. Create a Catalyst project named `DropSafe` in https://console.catalyst.zoho.com (free tier; no card needed at signup per Zoho's pricing page).
+2. Log in with the CLI: `npx zcatalyst-cli login`.
+3. Link the project folder (replace the IDs with yours from `npx zcatalyst-cli project:list`):
+   ```powershell
+   cd deploy\catalyst\project
+   npx zcatalyst-cli init --org <org_id> --project <project_id>
+   npx zcatalyst-cli appsail:add --name dropsafe-api --stack python_3_12 --source "<abs path to deploy\catalystuild>" --build "./" --command "sh start-catalyst.sh"
+   ```
+4. Keep your private values outside the repo in `%USERPROFILE%\.dropsafe\`: `neon.json` (`database_url`), `sepolia-wallet.json` (`private_key`, `contract_address`). `catalyst-env.json` (random `SECRET_KEY`, `allowed_origins`) is created on the first deploy.
+5. Create the tables and demo users once from your PC (the same `SECRET_KEY` must be used so signed credentials verify):
+   ```powershell
+   cd backend
+   $env:DATABASE_URL = "<neon string>"; $env:SECRET_KEY = "<secret_key from catalyst-env.json>"
+   .\.venv\Scripts\python.exe -m alembic upgrade head
+   .\.venv\Scripts\python.exe seed.py
+   ```
+
+Every deploy after that is one command:
+```powershell
+deploy\catalystuild-appsail.ps1   # only needed when dependencies change (deploy.ps1 runs it)
+deploy\catalyst\deploy.ps1
+```
+`deploy.ps1` bundles the backend with Linux wheels, writes the environment variables into the git-ignored `buildpp-config.json`, and runs `catalyst deploy`. The service URL is printed by the CLI and shown in the console under AppSail.
+
+Notes:
+- Free-tier AppSail runtime is limited (about 900 GB-minutes per month); at 512 MB that is roughly 30 hours of running time, so check Zoho's current limits and the console's usage page.
+- Use `catalyst deploy` (project-level) rather than `deploy appsail` with flags: only the former applies the environment variables from `app-config.json`.
+- The Catalyst CLI has no log viewer; read logs in the console (AppSail > dropsafe-api > Logs).
+
 ## 4. Frontend: Cloudflare Pages
 
 1. Cloudflare dashboard > **Workers & Pages > Create > Pages > Connect to Git**, pick the `DropSafe-CNS` repository.

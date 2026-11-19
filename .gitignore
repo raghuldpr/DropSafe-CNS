@@ -69,3 +69,7 @@ artifacts/
 cache/
 typechain/
 typechain-types/
+
+# Catalyst bundle output and local CLI state
+deploy/catalyst/build/
+deploy/catalyst/project/

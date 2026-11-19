@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 # DropSafe backend for free container hosts (Hugging Face Spaces, etc.).
 # Runs the API and the anchoring worker in one container. Published as "Dockerfile"
 # by deploy/publish-space.ps1.
@@ -15,7 +16,8 @@ WORKDIR /home/user/app
 ENV PYTHONPATH=/home/user/app
 
 COPY --chown=user requirements.txt .
-RUN pip install -r requirements.txt
+# BuildKit cache mount keeps downloaded wheels between attempts (helps on slow/flaky networks)
+RUN --mount=type=cache,target=/root/.cache/pip PIP_NO_CACHE_DIR=0 pip install --default-timeout=180 --retries 15 -r requirements.txt
 
 COPY --chown=user . .
 RUN sed -i 's/\r$//' start-hosted.sh && chmod +x start-hosted.sh && mkdir -p data/storage && chown -R user /home/user/app
