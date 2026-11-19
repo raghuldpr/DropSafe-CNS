@@ -18,7 +18,7 @@ COPY --chown=user requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY --chown=user . .
-RUN sed -i 's/$//' start-hosted.sh && chmod +x start-hosted.sh && mkdir -p data/storage && chown -R user /home/user/app
+RUN sed -i 's/\r$//' start-hosted.sh && chmod +x start-hosted.sh && mkdir -p data/storage && chown -R user /home/user/app
 
 USER user
 EXPOSE 7860
