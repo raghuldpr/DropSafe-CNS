@@ -72,7 +72,7 @@ class Settings(BaseSettings):
     REDIS_URL: str = "redis://localhost:6379/0"
 
     # Storage Settings (Cloudflare R2 / S3 / MinIO)
-    STORAGE_BACKEND: str = "r2"  # "r2", "s3", "minio", "memory"
+    STORAGE_BACKEND: str = "r2"  # "r2", "s3", "minio", "memory", "postgres"
     STORAGE_LOCAL_ROOT: str = "./data/storage"
     R2_ENDPOINT_URL: str = "http://localhost:9000"
     R2_ACCESS_KEY_ID: str = "minioadmin"

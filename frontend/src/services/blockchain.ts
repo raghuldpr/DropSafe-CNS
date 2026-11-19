@@ -21,7 +21,9 @@ export async function verifyBatchOnChain(
   batchNumber: number,
   expectedMerkleRootHex: string
 ): Promise<OnChainVerificationResult> {
-  const rpcUrl = import.meta.env.VITE_BLOCKCHAIN_RPC_URL || 'http://127.0.0.1:8545';
+  let rpcUrl = import.meta.env.VITE_BLOCKCHAIN_RPC_URL || 'http://127.0.0.1:8545';
+  // Allow a same-origin path (e.g. "/rpc") so remote visitors can reach the chain via the dev proxy
+  if (rpcUrl.startsWith('/')) rpcUrl = `${window.location.origin}${rpcUrl}`;
   const contractAddress =
     import.meta.env.VITE_AUDIT_ANCHOR_CONTRACT_ADDRESS ||
     '0x0000000000000000000000000000000000000000';

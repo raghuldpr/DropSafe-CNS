@@ -2,7 +2,9 @@
 #   Default : clean slate every start (fresh DB + fresh chain + reseeded demo users), because
 #             the local chain and file storage are in-memory and reset on restart.
 #   -Keep   : keep the existing database (stale batches will fail on-chain verification)
-param([switch]$Keep, [switch]$Reset)
+#   -Public : also share the demo on a public https URL via a free Cloudflare quick tunnel
+#             (needs `cloudflared`: winget install Cloudflare.cloudflared)
+param([switch]$Keep, [switch]$Reset, [switch]$Public)
 $ErrorActionPreference = "Continue"
 $root = $PSScriptRoot
 Set-Location $root
@@ -49,6 +51,7 @@ Write-Host "    Audit anchoring worker"
 Start-Process cmd -ArgumentList "/c title DropSafe-Worker & `"$py`" -m app.worker.worker > ..\worker.log 2>&1" -WorkingDirectory "$root\backend" -WindowStyle Minimized
 
 Write-Host "5/5 Frontend (Vite :5173)"
+if ($Public) { $env:VITE_BLOCKCHAIN_RPC_URL = "/rpc" }
 Start-Process cmd -ArgumentList "/c npm run dev > ..\frontend.log 2>&1" -WorkingDirectory "$root\frontend" -WindowStyle Minimized
 Wait-Url "http://localhost:5173/api/v1/health" "frontend (+proxy)"
 
@@ -56,4 +59,19 @@ Write-Host "`nDropSafe is live: http://localhost:5173"
 Write-Host "Demo logins: alice@dropsafe.local / AlicePass123!   bob@dropsafe.local / BobPass123!"
 Write-Host "             charlie@dropsafe.local / CharliePass123!   admin@dropsafe.local / AdminPass123!"
 Write-Host "Stop with: .\stop-demo.ps1"
+if ($Public) {
+    if (-not (Get-Command cloudflared -ErrorAction SilentlyContinue)) {
+        Write-Host "`n-Public needs cloudflared. Install: winget install Cloudflare.cloudflared (then rerun)." -ForegroundColor Yellow
+    } else {
+        Write-Host "`nStarting public tunnel (URL appears below, also saved in tunnel.log)..."
+        Start-Process cmd -ArgumentList "/c title DropSafe-Tunnel & cloudflared tunnel --url http://localhost:5173 > tunnel.log 2>&1" -WorkingDirectory $root -WindowStyle Minimized
+        $url = $null
+        for ($i = 0; $i -lt 30 -and -not $url; $i++) {
+            Start-Sleep 1
+            $log = Join-Path $root "tunnel.log"
+            if (Test-Path $log) { $m = Select-String -Path $log -Pattern "https://[a-z0-9-]+\.trycloudflare\.com" -ErrorAction SilentlyContinue | Select-Object -First 1; if ($m) { $url = $m.Matches[0].Value } }
+        }
+        if ($url) { Write-Host "PUBLIC URL: $url" -ForegroundColor Green } else { Write-Host "Tunnel URL not found yet; check tunnel.log" -ForegroundColor Yellow }
+    }
+}
 Start-Process "http://localhost:5173"

@@ -58,7 +58,7 @@ Then, with Docker Desktop running, double-click **`start-demo.bat`** (or run `.\
 4. starts the backend, the anchoring worker and the frontend,
 5. opens http://localhost:5173.
 
-Every start is a clean slate, because the local chain and file storage are in-memory. Use `start-demo.bat -Keep` to keep the existing database. Stop everything with **`stop-demo.bat`**.
+Every start is a clean slate, because the local chain and file storage are in-memory. Use `start-demo.bat -Keep` to keep the existing database. Stop everything with **`stop-demo.bat`**. To share the running demo through a free public `https` link, run `.\start-demo.ps1 -Public` (needs `cloudflared`).
 
 Logs are written to `backend.log`, `worker.log`, `frontend.log` and `hardhat.log`.
 
@@ -74,6 +74,10 @@ These are local development accounts created by `backend/seed.py`. The sign-in p
 | Admin | admin@dropsafe.local | AdminPass123! | admin role |
 
 The walkthrough for presenting the project is in [DEMO-GUIDE.md](DEMO-GUIDE.md).
+
+## Hosting for free
+
+A card-free hosted setup (Cloudflare Pages, Hugging Face Spaces, Neon Postgres, Sepolia testnet) is documented step by step in [DEPLOY.md](DEPLOY.md).
 
 ## Running tests
 

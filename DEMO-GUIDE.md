@@ -14,6 +14,8 @@
 
 Pre-flight checklist (all verified): sign-in works for all four users; Admin Console loads for Admin only (Alice gets 403); "Verify Hash Chain" reports valid; "Seal & Anchor Batch" turns `prepared` into `anchored` within ~7 s; cold start takes ~25–35 s.
 
+Want examiners to open it on their own devices? Run `.\start-demo.ps1 -Public` instead (needs `winget install Cloudflare.cloudflared` once). It prints a public `https://*.trycloudflare.com` link that works while your laptop is on. A permanent hosted version is described in `DEPLOY.md`.
+
 Logs if anything misbehaves: `backend.log`, `worker.log`, `frontend.log`, `hardhat.log`.
 
 Note: the chain and file storage are in-memory by design for dev. Restarting wipes uploaded files and on-chain anchors, so start once and don't restart mid-demo.

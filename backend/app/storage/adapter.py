@@ -282,6 +282,79 @@ class InMemoryStorageAdapter(StorageAdapter):
     put_bytes = put_object_bytes
 
 
+class PostgresStorageAdapter(InMemoryStorageAdapter):
+    """Stores ciphertext blobs in a PostgreSQL table (bytea).
+
+    Intended for free-tier hosting where no object store or persistent disk is available.
+    Uploads and downloads are relayed through the backend (/api/v1/storage/...), exactly like
+    the in-memory adapter, so the browser never needs direct access to the database.
+    Only client-side-encrypted ciphertext is ever stored.
+    """
+
+    _DDL = (
+        "CREATE TABLE IF NOT EXISTS storage_objects ("
+        "object_key TEXT PRIMARY KEY, data BYTEA NOT NULL, "
+        "size_bytes BIGINT NOT NULL, sha256 TEXT NOT NULL, "
+        "created_at TIMESTAMPTZ NOT NULL DEFAULT now())"
+    )
+
+    def __init__(self, bucket_name: Optional[str] = None, dsn: Optional[str] = None):
+        super().__init__(bucket_name=bucket_name or settings.R2_BUCKET_NAME)
+        raw = dsn or settings.DATABASE_URL or ""
+        self._dsn = raw.replace("postgresql+psycopg://", "postgresql://", 1)
+        self._ready = False
+
+    def _connect(self):
+        import psycopg
+
+        conn = psycopg.connect(self._dsn, autocommit=True, connect_timeout=15)
+        if not self._ready:
+            conn.execute(self._DDL)
+            self._ready = True
+        return conn
+
+    def verify_object_exists(self, object_key: str) -> Tuple[bool, int, str]:
+        with self._connect() as conn:
+            row = conn.execute(
+                "SELECT size_bytes, sha256 FROM storage_objects WHERE object_key = %s", (object_key,)
+            ).fetchone()
+        return (True, int(row[0]), row[1]) if row else (False, 0, "")
+
+    def delete_object(self, object_key: str) -> None:
+        with self._connect() as conn:
+            conn.execute("DELETE FROM storage_objects WHERE object_key = %s", (object_key,))
+
+    def put_object_bytes(
+        self,
+        object_key: str,
+        data: bytes,
+        content_type: str = "application/octet-stream",
+        metadata: Optional[Dict[str, str]] = None,
+    ) -> Tuple[int, str]:
+        etag = hashlib.sha256(data).hexdigest()
+        try:
+            with self._connect() as conn:
+                conn.execute(
+                    "INSERT INTO storage_objects (object_key, data, size_bytes, sha256) "
+                    "VALUES (%s, %s, %s, %s) ON CONFLICT (object_key) DO UPDATE "
+                    "SET data = EXCLUDED.data, size_bytes = EXCLUDED.size_bytes, sha256 = EXCLUDED.sha256",
+                    (object_key, data, len(data), etag),
+                )
+        except Exception as e:
+            logger.error(f"Failed to write ciphertext to Postgres storage '{object_key}': {e}")
+            raise StorageException(f"Failed to store object: {e}")
+        return len(data), etag
+
+    def get_object_bytes(self, object_key: str) -> bytes:
+        with self._connect() as conn:
+            row = conn.execute(
+                "SELECT data FROM storage_objects WHERE object_key = %s", (object_key,)
+            ).fetchone()
+        if not row:
+            raise StorageException(f"Object '{object_key}' not found in storage")
+        return bytes(row[0])
+
+
 _global_adapter: Optional[StorageAdapter] = None
 
 
@@ -291,6 +364,8 @@ def get_storage_adapter() -> StorageAdapter:
     if _global_adapter is None:
         if settings.STORAGE_BACKEND == "memory" or settings.is_testing:
             _global_adapter = InMemoryStorageAdapter(bucket_name=settings.R2_BUCKET_NAME)
+        elif settings.STORAGE_BACKEND == "postgres":
+            _global_adapter = PostgresStorageAdapter()
         else:
             _global_adapter = StorageAdapter()
     return _global_adapter
